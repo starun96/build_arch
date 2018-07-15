@@ -1,10 +1,14 @@
-kk#!/bin/bash
+#!/bin/bash
 
 ### Initialization ###
+
+    # args
+        # $1 - personal partition (e.g. sdb3), has personal directory
 
     # vars
         user=tarun
         personaldir=personal
+        personalpartition=$1
 
     # change language settings
         sed -Ei 's/#en_US/en_US/g' /etc/locale.gen
@@ -29,7 +33,10 @@ kk#!/bin/bash
         sed -Ei 's/# %wheel ALL=\(ALL\) ALL$/ %wheel ALL=\(ALL\) ALL/' /etc/sudoers
 
     # add personal files to home directory
-        mv /home/$personaldir/* /home/$user
+        mkdir /mnt/$personaldir
+        mount /dev/$personalpartition /mnt/$personaldir
+        cp /mnt/$personaldir/* /home/$user
+        umount /dev/$personalpartition
 
     # switch into user to install packages
         su - $user

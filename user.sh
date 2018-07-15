@@ -1,6 +1,9 @@
 #!/bin/bash
 
-### Various Files ###
+### Setup Various Files ###
+
+    # should run the following before executing this script
+        # bash /user.sh
 
     # vars
         email=tarunsaharya@gmail.com
@@ -37,7 +40,7 @@
 
 
 
-### Program Setup ###
+### Setup programs ###
 
     # git 
         sudo pacman -S --noconfirm git
@@ -100,3 +103,9 @@
 
     # icons
         cp -r aesthetic/icons/* .local/share/icons
+
+
+
+### Finalize ###
+
+    exit

@@ -4,8 +4,7 @@
 
     # supposed to run the following before script
         # git clone https://github.com/starun96/build_arch
-        # cd build_arch
-        # ./root_uefi.sh
+        # bash build_arch/root_uefi.sh sda sdb3
 
     # select wifi network
         wifi-menu
@@ -13,39 +12,50 @@
     # update system clock
         timedatectl set-ntp true
 
-    # create partitions (assuming /dev/sda is the disk that is to be partitioned)
-        fdisk /dev/sda
+    # set up target disk and personal partition
+        disk=$1
+        if [[ -z $disk ]]; then
+            echo "Must enter a proper disk ID (such as sda)"
+            exit
+        fi
+        personalpartition=$2
+        if [[ -z $personalpartition ]]; then
+            echo "Must enter a proper partition ID (such as sdb3)"
+            exit
+        fi
+
+    # create partitions
+        fdisk /dev/$disk
 
     # format partitions
-        mkfs.fat -F32 /dev/sda1 # boot
-        mkfs.ext4 /dev/sda2 # root
-        mkfs.ext4 /dev/sda4 # home
+        mkfs.fat -F32 /dev/${disk}1 # boot
+        mkfs.ext4 /dev/${disk}2 # root
+        mkfs.ext4 /dev/${disk}4 # home
 
     # configure swap partition
-        mkswap /dev/sda3
-        swapon /dev/sda3
+        mkswap /dev/${disk}3
+        swapon /dev/${disk}3
     
     # mount partitions
-        mount /dev/sda2 /mnt # root
-        mkdir -p /mnt/{home,boot} # create mount points
-        mount /dev/sda4 /mnt/home # home
-        mount /dev/sda1 /mnt/boot # boot (EFI)
+        mount /dev/${disk}2 /mnt # root
+        mkdir /mnt/{home,boot} # create mount points
+        mount /dev/${disk}4 /mnt/home # home
+        mount /dev/${disk}1 /mnt/boot # boot (EFI)
 
-    # install base packages
+    # install base packages to root directory
         pacstrap /mnt base base-devel
 
     # create fstab file
         genfstab -U /mnt >> /mnt/etc/fstab
 
-    # root into disk
-        arch-chroot /mnt bash /home/$personaldir/scripts/build_arch_disk.sh
+    # copy chroot script into the disk
+        cp build_arch/chroot.sh /mnt
 
-    # unmount
-        cd
-        umount /mnt/$personaldir
-        umount /mnt/home
-        umount /mnt/boot
-        umount /mnt
+    # root into disk and begin next phase of the installation process
+        arch-chroot /mnt bash chroot.sh $personalpartition
+
+    # unmount everything
+        umount -R /mnt
         
-    # reboot
-        reboot
+    # reboot (not until script is finalized, though)
+        #reboot
