@@ -57,7 +57,7 @@
     # most packages
         while read -r package; do
             yay -S --noconfirm -nodiffmenu "$package"
-        done < scripts/aur_packages.txt
+        done < configs/aur_packages.txt
     
     # vtop
         sudo npm install -g vtop
@@ -108,4 +108,5 @@
 
 ### Finalize ###
 
-    exit
+    # exit to chroot mode
+        exit

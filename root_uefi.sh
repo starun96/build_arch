@@ -3,11 +3,17 @@
 ### ISO root commands ###
 
     # supposed to run the following before script
-        # git clone https://github.com/starun96/build_arch
+        # wifi-menu
+        # curl https://raw.githubusercontent.com/starun96/build_arch/master/root_uefi.sh > root_uefi.sh
+        # curl https://raw.githubusercontent.com/starun96/build_arch/master/chroot.sh > chroot.sh
+        # curl https://raw.githubusercontent.com/starun96/build_arch/master/user.sh > user.sh
+        
         # bash build_arch/root_uefi.sh sda sdb3
 
-    # select wifi network
-        wifi-menu
+    # change script permissions (just in case)
+        chmod +x root_uefi.sh
+        chmod +x chroot.sh
+        chmod +x user.sh
 
     # update system clock
         timedatectl set-ntp true
@@ -48,8 +54,9 @@
     # create fstab file
         genfstab -U /mnt >> /mnt/etc/fstab
 
-    # copy chroot script into the disk
-        cp build_arch/chroot.sh /mnt
+    # copy chroot and user scripts into the disk
+        cp chroot.sh /mnt
+        cp user.sh /mnt
 
     # root into disk and begin next phase of the installation process
         arch-chroot /mnt bash chroot.sh $personalpartition

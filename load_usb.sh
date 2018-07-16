@@ -1,35 +1,32 @@
 #!/bin/bash
 
-# load usb with arch iso
+# vars
+    personaldir=personal
 
-drive=$1
-if [[ -z $drive ]]; then 
-    echo "Incorrect # of args"
-    exit
-fi
-personaldir=personal
+# setting up target drive
+    drive=$1
+    if [[ -z $drive ]]; then 
+        echo "Incorrect # of args"
+        exit
+    fi
 
-sudo dd bs=4M if=$HOME/downloads/arch.iso of=/dev/$drive oflag=sync status=progress
-sudo fdisk /dev/$drive # (create a new partition)
-sudo mkfs.ext4 /dev/${drive}3
-sudo mkdir -p /mnt/$personaldir
-sudo mount /dev/${drive}3 /mnt/$personaldir
+# load ISO onto the drive
+    sudo dd bs=4M if=$HOME/downloads/arch.iso of=/dev/$drive oflag=sync status=progress
 
-declare -a dir_list=(
-    aesthetic
-    coding
-    configs
-    documents
-    downloads
-    media
-    music
-    notes
-    school
-    scripts
-)
+# create a new partition
+    sudo fdisk /dev/$drive 
 
-for dir in ${dir_list[@]}; do
-    sudo cp -r $HOME/$dir /mnt/$personaldir
-done
+# format the new partition
+    sudo mkfs.ext4 /dev/${drive}3
 
-sudo umount /mnt/$personaldir
+# mount the partition
+    sudo mkdir -p /mnt/$personaldir
+    sudo mount /dev/${drive}3 /mnt/$personaldir
+
+# copy home directories onto the partition
+    while read -r dir; do
+        sudo cp -r ~/$dir /mnt/$personaldir    
+    done < ~/configs/personal_folders.txt
+
+# unmount the partition
+    sudo umount /mnt/$personaldir
