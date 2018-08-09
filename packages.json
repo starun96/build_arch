@@ -1,0 +1,56 @@
+{
+    "official": [
+        "mesa",
+        "grub",
+        "efibootmgr",
+        "xorg-server",
+        "xorg-xinit",
+        "xorg-apps",
+        "xf86-input-libinput",
+        "xf86-video-intel", 
+        "i3-gaps", 
+        "python",
+        "python-pip", 
+        "python-setuptools",
+        "feh", 
+        "syncthing", 
+        "libx264",
+        "qutebrowser", 
+        "zsh",
+        "ranger",
+        "redshift", 
+        "messengerfordesktop",
+        "virtualbox-host-modules-arch",
+        "virtualbox", 
+        "vlc", 
+        "easytag", 
+        "libconfig", 
+        "lxappearance",
+        "networkmanager", 
+        "neovim", 
+        "pulseaudio", 
+        "npm", 
+        "rofi", 
+        "python-gobject",
+        "rxvt-unicode",
+        "wget",
+        "w3m",
+        "wpa_supplicant",
+        "intel-ucode"
+    ],
+    "aur": [
+        "google-chrome", 
+        "autokey-py3",
+        "steamcmd",
+        "visual-studio-code-bin",
+        "compton-tryone-git",
+        "st"
+    ],
+    "pip": [
+        "syncthingmanager"
+    ],
+    "npm": [
+        "vtop"
+    ]
+
+}

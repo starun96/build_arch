@@ -1,0 +1,9 @@
+aesthetic
+configs
+documents
+downloads
+media
+music
+notes
+school
+scripts

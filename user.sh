@@ -2,111 +2,87 @@
 
 ### Setup Various Files ###
 
-    # should run the following before executing this script
-        # bash /user.sh
-
     # vars
         email=tarunsaharya@gmail.com
         githubid=starun96
-        user=tarun
-        personaldir=personal
-
-    # profile
-        rm .bash_profile
-        ln configs/profile.conf .profile
-
-    # bash aliases
-        ln configs/bash_aliases .bash_aliases
-
-    # Xresources 
-        ln configs/Xresources .Xresources
-
-    # bashrc 
-        rm .bashrc
-        ln configs/bashrc .bashrc
-
-    # xinitrc 
-        ln configs/xinitrc .xinitrc
     
-    # vim
-        ln configs/vim/vimrc .vimrc
-
-    # i3
-        mkdir .config/i3
-        ln configs/i3 .config/i3/config
-
-    # special installers folder
-        mkdir special_installers
-
-
-
-### Setup programs ###
+### Install programs ###
 
     # git 
         sudo pacman -S --noconfirm git
         git config --global user.email "$email" 
         git config --global user.name "$githubid" 
         git config --global credential.helper "cache --timeout=3600"
-    
+
     # yay
         git clone https://aur.archlinux.org/yay.git
         cd yay
-        makepkg -si
-        cd /home/$user
+        makepkg -si --noconfirm 
+        cd
 
-    # most packages
-        while read -r package; do
-            yay -S --noconfirm -nodiffmenu "$package"
-        done < configs/aur_packages.txt
-    
-    # vtop
-        sudo npm install -g vtop
+    # all packages
+        curl https://raw.githubusercontent.com/starun96/build_arch/master/packages.txt > packages.txt
+        sudo pacman -S --noconfirm jq
+        for package in $(jq -c '(.official + .aur)[]' packages.json); do
+            yay -S --noconfirm --nodiffmenu "$package"
+        done
+        for package in $(jq -c '.pip[]' packages.json); do
+            pip3 install --user $user "$package"
+        done
+        for package in $(jq -c '.npm[]' packages.json); do
+            npm install "$package"
+        done
 
-    # network manager
+### Initialize wifi ###
+
+    # enable and start Network Manager
         sudo systemctl enable NetworkManager
-
-    # lightdm
-        sudo systemctl enable lightdm.service
-
-    # dynpaper 
-        cd special_installers
-        git clone https://github.com/oddProton/dynpaper
-        cd dynpaper
-        sudo ./setup.py install
-        cd /home/$user
-
-    # vscode
-        mkdir -p .config/Code/User
-        ln configs/vscode_settings.json .config/Code/User/settings.json
-        ln configs/vscode_keybindings.json .config/Code/User/keybindings.json
- 
-    # autokey
-        ln -s configs/autokey .config/autokey
         
-    # ranger
-        mkdir .config/ranger
-        ln configs/ranger/rifle.conf .config/ranger/rifle.conf
+### Initialize TLP ###
 
-    # vscode
-        mkdir -p .config/Code/User         
-        ln configs/vscode_settings.json .config/Code/User/settings.json
-        ln configs/vscode_keybindings.json .config/Code/User/keybindings.json
-        ln -s configs/vscode_extensions .vscode/extensions
+    # prompt for desktop vs laptop
+        device_pattern='^d|l$'
+        until [[ $device =~ $device_pattern ]]; do
+            read -p 'Please specify whether this machine is the desktop or the laptop. Enter d for Desktop and l for laptop: ' $device
+        done
+        case "$device" in
+            b) device='desktop' ;;
+            u) device='laptop' ;;
+            *) exit ;;
+        esac
 
+    # enable tlp for laptop and mask services to avoid conflicts
+        if [ $device = 'laptop' ]; then
+            yay -S --noconfirm --nodiffmenu tlp tlpui-git
+            sudo systemctl enable tlp
+            sudo systemctl enable tlp-sleep
+            sudo systemctl mask systemd-rfkill.service
+            sudo systemctl mask systemd-rfkill.socket
+        fi
 
+    # enable NVIDIA graphics for desktop
+        if [ $device = 'desktop' ]; then
+            yay -S --noconfirm --nodiffmenu nvidia
+        fi
 
-### Miscellaneous ###
+### Sync personal files ###
+    
+    # start syncthing
+        syncthing
+    
+    # configure syncthingmanager
+        .local/bin/stman configure
 
-    # fonts
-        cp -r aesthetic/fonts/* .local/share/fonts
-        fc-cache -f -v
-
-    # icons
-        cp -r aesthetic/icons/* .local/share/icons
-
-
+     # add folders
+        curl https://raw.githubusercontent.com/starun96/build_arch/master/personal_dirs.txt > personal_dirs.txt
+        while read -r dir; do
+            stman folder add 
+        done < personal_dirs.txt
 
 ### Finalize ###
+
+    # change all files in home to be writable and executable
+        sudo chmod -R 777 ~
 
     # exit to chroot mode
         exit
