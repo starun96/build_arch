@@ -54,3 +54,7 @@ configs=~/main/configs
     # enable gtk aesthetic
         mkdir -p ~/.config/gtk-3.0
         ln -sf $configs/gtk-settings.ini ~/.config/gtk-3.0/settings.ini
+
+    # flash focus
+        mkdir -p ~/.config/flashfocus
+        ln -sf $configs/flashfocus ~/.config/flashfocus/flashfocus.yml
