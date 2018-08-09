@@ -1,20 +1,16 @@
 {
     "official": [
-        "mesa",
-        "grub",
-        "efibootmgr",
+        "dialog",
         "xorg-server",
         "xorg-xinit",
         "xorg-apps",
         "xf86-input-libinput",
-        "xf86-video-intel", 
         "i3-gaps", 
         "python",
         "python-pip", 
         "python-setuptools",
         "feh", 
         "syncthing", 
-        "libx264",
         "qutebrowser", 
         "zsh",
         "ranger",
@@ -24,8 +20,7 @@
         "virtualbox", 
         "vlc", 
         "easytag", 
-        "libconfig", 
-        "lxappearance",
+        "libconfig",
         "networkmanager", 
         "neovim", 
         "pulseaudio", 
@@ -35,8 +30,7 @@
         "rxvt-unicode",
         "wget",
         "w3m",
-        "wpa_supplicant",
-        "intel-ucode"
+        "wpa_supplicant"
     ],
     "aur": [
         "google-chrome", 

@@ -11,9 +11,6 @@ configs=~/main/configs
 
     # zprofile 
         ln -sf $configs/zprofile ~/.zprofile
-k
-    # bash aliases
-        # ln -sf $configs/bash_aliases ~/.bash_aliases
 
     # Xresources 
         ln -sf $configs/Xresources ~/.Xresources
@@ -47,7 +44,7 @@ k
         ln -sf $configs/vscode_keybindings.json ~/.config/Code/User/keybindings.json
 
     # libinput
-        sudo rm /usr/share/X11/xorg.conf.d/40-libinput.conf
+        mkdir -p /usr/share/X11/xorg.conf.d/40-libinput.conf
         sudo ln -sf $configs/libinput.conf /usr/share/X11/xorg.conf.d/40-libinput.conf
 
     # fonts, themes, icons
